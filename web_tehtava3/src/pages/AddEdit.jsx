@@ -5,15 +5,15 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const initialState = {
-  name: "",
-  email: "",
-  contact: "",
+  ip: "",
+  nimi: "",
+  osoite: "",
 };
 
 const AddEdit = () => {
   const [state, setState] = useState(initialState);
 
-  const { name, email, contact } = state;
+  const { ip, nimi, osoite } = state;
 
   const navigator = useNavigate();
 
@@ -27,7 +27,7 @@ const AddEdit = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name || !email || !contact)
+    if (!ip || !nimi || !osoite)
       toast.error("Please provide value in input field", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -35,12 +35,12 @@ const AddEdit = () => {
       if (!id) {
         axios
           .post("http://localhost:5000/api/post", {
-            name,
-            email,
-            contact,
+            ip,
+            nimi,
+            osoite,
           })
           .then(() => {
-            setState({ name: "", email: "", contact: "" });
+            setState({ ip: "", nimi: "", osoite: "" });
           })
           .catch((err) => toast.error(err.response.data));
         toast.success("Contact Added Successfully", {
@@ -49,12 +49,12 @@ const AddEdit = () => {
       } else {
         axios
           .put(`http://localhost:5000/api/update/${id}`, {
-            name,
-            email,
-            contact,
+            ip,
+            nimi,
+            osoite,
           })
           .then(() => {
-            setState({ name: "", email: "", contact: "" });
+            setState({ ip: "", nimi: "", osoite: "" });
           })
           .catch((err) => toast.error(err.response.data));
         toast.success("Contact Updated Successfully", {
@@ -81,31 +81,31 @@ const AddEdit = () => {
         }}
         onSubmit={handleSubmit}
       >
-        <label htmlFor="name">Name</label>
+        <label htmlFor="ip">Ip</label>
         <input
           type="text"
-          id="name"
-          name="name"
-          placeholder="Enter Name..."
-          value={name || ""}
+          id="ip"
+          name="ip"
+          placeholder="Enter Ip..."
+          value={ip || ""}
           onChange={handleInputChange}
         />
-        <label htmlFor="email">Email</label>
+        <label htmlFor="nimi">Nimi</label>
         <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="Enter Email..."
-          value={email || ""}
+          type="text"
+          id="nimi"
+          name="nimi"
+          placeholder="Enter Nimi..."
+          value={nimi || ""}
           onChange={handleInputChange}
         />
-        <label htmlFor="contact">Contact</label>
+        <label htmlFor="osoite">osoite</label>
         <input
-          type="number"
-          id="contact"
-          name="contact"
+          type="text"
+          id="osoite"
+          name="osoite"
           placeholder="Enter mobile no..."
-          value={contact || ""}
+          value={osoite || ""}
           onChange={handleInputChange}
         />
         <input type="submit" value={id ? "Update" : "Save"} />

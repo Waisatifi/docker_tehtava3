@@ -12,7 +12,7 @@ const dbConfig = {
   host: "localhost",
   user: "root",
   password: "Saharruddin213.",
-  database: "contacts",
+  database: "verkkolaitteet",
 };
 
 let db = mysql.createConnection(dbConfig);
@@ -27,7 +27,7 @@ function handleDisconnect() {
     } else {
       console.log("Connected to Database");
       console.log("Creating database table");
-      let tableName = "reititin_db";
+      let tableName = "contact_db";
 
       // Query to create table
       let query = `CREATE TABLE ${tableName} 
@@ -143,19 +143,18 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/api/post", (req, res) => {
-  const { name, email, contact } = req.body;
-  const sqlInsert =
-    "INSERT INTO contact_db(name, email, contact) VALUES(?,?,?)";
-  db.query(sqlInsert, [name, email, contact], (error, result) => {
+  const { ip, nimi, osoite } = req.body;
+  const sqlInsert = "INSERT INTO contact_db(ip, nimi, osoite) VALUES(?,?,?)";
+  db.query(sqlInsert, [ip, nimi, osoite], (error, result) => {
     if (error) console.log(error);
   });
 });
 
-app.delete("/api/remove/:id", (req, res) => {
-  const { id } = req.params;
-  const sqlRemove = "DELETE FROM contact_db WHERE id=?";
+app.delete("/api/remove/:tableName/:id", (req, res) => {
+  const { tableName, id } = req.params;
+  const sqlRemove = `DELETE FROM ${tableName} WHERE id=?`;
   db.query(sqlRemove, id, (error, result) => {
-    if (error) console.log(error);
+    if (error) console.log("ei onnistu");
   });
 });
 
@@ -170,10 +169,10 @@ app.get("/api/get/:id", (req, res) => {
 
 app.put("/api/update/:id", (req, res) => {
   const { id } = req.params;
-  const { name, email, contact } = req.body;
+  const { ip, nimi, osoite } = req.body;
   const sqlUpdate =
-    "UPDATE contact_db SET name= ?, email= ?, contact= ? WHERE id=?";
-  db.query(sqlUpdate, [name, email, contact, id], (err, result) => {
+    "UPDATE contact_db SET ip= ?, nimi= ?, osoite= ? WHERE id=?";
+  db.query(sqlUpdate, [ip, nimi, osoite, id], (err, result) => {
     if (err) console.log(err);
     res.send(result);
   });

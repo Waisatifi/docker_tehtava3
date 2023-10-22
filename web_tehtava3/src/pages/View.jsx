@@ -24,16 +24,16 @@ const View = () => {
           <span>{id}</span>
           <br />
           <br />
-          <strong>Name: </strong>
-          <span>{user.name}</span>
+          <strong>Ip: </strong>
+          <span>{user.ip}</span>
           <br />
           <br />
-          <strong>Email: </strong>
-          <span>{user.email}</span>
+          <strong>Nimi: </strong>
+          <span>{user.nimi}</span>
           <br />
           <br />
-          <strong>Contact: </strong>
-          <span>{user.contact}</span>
+          <strong>Osoite: </strong>
+          <span>{user.ip}</span>
           <br />
           <br />
           <Link to="/">

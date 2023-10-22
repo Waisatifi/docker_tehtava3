@@ -17,7 +17,7 @@ function Home() {
   const [data, setData] = useState([]);
   const [auth, setAuth] = useState(false);
   const [message, setMessage] = useState("");
-  const [username, setName] = useState("");
+  const [uIp, Ip] = useState("");
   axios.defaults.withCredentials = true;
   const navigate = useNavigate();
   useEffect(() => {
@@ -26,7 +26,7 @@ function Home() {
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(true);
-          setName(res.data.username);
+          Ip(res.data.uIp);
         } else {
           setAuth(false);
           setMessage(res.data.Error);
@@ -44,9 +44,9 @@ function Home() {
     loadData().catch((error) => console.error(error));
   }, []);
 
-  const deleteContact = (id) => {
+  const deleteContact = (tableName, id) => {
     if (window.confirm("Are you sure you want to delete contact?")) {
-      axios.delete(`http://localhost:5000/api/remove/${id}`);
+      axios.delete(`http://localhost:5000/api/remove/${tableName}/${id}`);
       toast.success("Contact Deleted Successfully", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -58,7 +58,7 @@ function Home() {
     <div style={{ marginTop: "150px" }}>
       {auth ? ( // Conditionally render content based on user authentication
         <div>
-          <h3>You are aturozied --- {username} </h3>
+          <h3>You are aturozied --- {uIp} </h3>
           <div>
             <Link to="/Addcontact">
               <button className="btn btn-contact">Add Contact</button>
@@ -69,9 +69,9 @@ function Home() {
                 <TableHead>
                   <TableRow>
                     <TableCell align="center">No.</TableCell>
-                    <TableCell align="center">Name</TableCell>
-                    <TableCell align="center">Email</TableCell>
-                    <TableCell align="center">Contact</TableCell>
+                    <TableCell align="center">Ip</TableCell>
+                    <TableCell align="center">Nimi</TableCell>
+                    <TableCell align="center">Osoite</TableCell>
                     <TableCell align="center">Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -81,16 +81,200 @@ function Home() {
                       <TableCell component="th" scope="row">
                         {index + 1}
                       </TableCell>
-                      <TableCell align="right">{item.name}</TableCell>
-                      <TableCell align="right">{item.email}</TableCell>
-                      <TableCell align="right">{item.contact}</TableCell>
+                      <TableCell align="right">{item.ip}</TableCell>
+                      <TableCell align="right">{item.nimi}</TableCell>
+                      <TableCell align="right">{item.osoite}</TableCell>
                       <TableCell align="right">
                         <Link to={`/update/${item.id}`}>
                           <button className="btn btn-edit">Edit</button>
                         </Link>
                         <button
                           className="btn btn-delete"
-                          onClick={() => deleteContact(item.id)}
+                          onClick={() => deleteContact("contact_db", item.id)}
+                        >
+                          Delete
+                        </button>
+                        <Link to={`/view/${item.id}`}>
+                          <button className="btn btn-view">View</button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          <div className="mt-5">
+            <h3>Reitittimet</h3>
+            <Link to="/Addcontact">
+              <button className="btn btn-contact">Add Contact</button>
+            </Link>
+            <TableContainer component={Paper} className="styled-table">
+              <Table aria-label="caption table">
+                <caption>Contact data in the database</caption>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">No.</TableCell>
+                    <TableCell align="center">Ip</TableCell>
+                    <TableCell align="center">Nimi</TableCell>
+                    <TableCell align="center">Osoite</TableCell>
+                    <TableCell align="center">Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.map((item, index) => (
+                    <TableRow key={item.id}>
+                      <TableCell component="th" scope="row">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell align="right">{item.ip}</TableCell>
+                      <TableCell align="right">{item.nimi}</TableCell>
+                      <TableCell align="right">{item.osoite}</TableCell>
+                      <TableCell align="right">
+                        <Link to={`/update/${item.id}`}>
+                          <button className="btn btn-edit">Edit</button>
+                        </Link>
+                        <button
+                          className="btn btn-delete"
+                          onClick={() => deleteContact("contact_db", item.id)}
+                        >
+                          Delete
+                        </button>
+                        <Link to={`/view/${item.id}`}>
+                          <button className="btn btn-view">View</button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          <div className="mt-5">
+            <h3>Nas</h3>
+            <Link to="/Addcontact">
+              <button className="btn btn-contact">Add Contact</button>
+            </Link>
+            <TableContainer component={Paper} className="styled-table">
+              <Table aria-label="caption table">
+                <caption>Contact data in the database</caption>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">No.</TableCell>
+                    <TableCell align="center">Ip</TableCell>
+                    <TableCell align="center">Nimi</TableCell>
+                    <TableCell align="center">Osoite</TableCell>
+                    <TableCell align="center">Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.map((item, index) => (
+                    <TableRow key={item.id}>
+                      <TableCell component="th" scope="row">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell align="right">{item.ip}</TableCell>
+                      <TableCell align="right">{item.nimi}</TableCell>
+                      <TableCell align="right">{item.osoite}</TableCell>
+                      <TableCell align="right">
+                        <Link to={`/update/${item.id}`}>
+                          <button className="btn btn-edit">Edit</button>
+                        </Link>
+                        <button
+                          className="btn btn-delete"
+                          onClick={() => deleteContact("contact_db", item.id)}
+                        >
+                          Delete
+                        </button>
+                        <Link to={`/view/${item.id}`}>
+                          <button className="btn btn-view">View</button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          <div className="mt-5">
+            <h3>ePDU</h3>
+            <Link to="/Addcontact">
+              <button className="btn btn-contact">Add Contact</button>
+            </Link>
+            <TableContainer component={Paper} className="styled-table">
+              <Table aria-label="caption table">
+                <caption>Contact data in the database</caption>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">No.</TableCell>
+                    <TableCell align="center">Ip</TableCell>
+                    <TableCell align="center">Nimi</TableCell>
+                    <TableCell align="center">Osoite</TableCell>
+                    <TableCell align="center">Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.map((item, index) => (
+                    <TableRow key={item.id}>
+                      <TableCell component="th" scope="row">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell align="right">{item.ip}</TableCell>
+                      <TableCell align="right">{item.nimi}</TableCell>
+                      <TableCell align="right">{item.osoite}</TableCell>
+                      <TableCell align="right">
+                        <Link to={`/update/${item.id}`}>
+                          <button className="btn btn-edit">Edit</button>
+                        </Link>
+                        <button
+                          className="btn btn-delete"
+                          onClick={() => deleteContact("contact_db", item.id)}
+                        >
+                          Delete
+                        </button>
+                        <Link to={`/view/${item.id}`}>
+                          <button className="btn btn-view">View</button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          <div className="mt-5">
+            <h3>Reitittimet</h3>
+            <Link to="/Addcontact">
+              <button className="btn btn-contact">Add Contact</button>
+            </Link>
+            <TableContainer component={Paper} className="styled-table">
+              <Table aria-label="caption table">
+                <caption>Contact data in the database</caption>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">No.</TableCell>
+                    <TableCell align="center">Ip</TableCell>
+                    <TableCell align="center">Nimi</TableCell>
+                    <TableCell align="center">Osoite</TableCell>
+                    <TableCell align="center">Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.map((item, index) => (
+                    <TableRow key={item.id}>
+                      <TableCell component="th" scope="row">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell align="right">{item.ip}</TableCell>
+                      <TableCell align="right">{item.nimi}</TableCell>
+                      <TableCell align="right">{item.osoite}</TableCell>
+                      <TableCell align="right">
+                        <Link to={`/update/${item.id}`}>
+                          <button className="btn btn-edit">Edit</button>
+                        </Link>
+                        <button
+                          className="btn btn-delete"
+                          onClick={() => deleteContact("contact_db", item.id)}
                         >
                           Delete
                         </button>
