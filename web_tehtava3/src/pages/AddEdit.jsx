@@ -18,12 +18,14 @@ const AddEdit = () => {
   const navigator = useNavigate();
 
   const { id } = useParams();
+  const tableName = "reititin_db";
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/get/${id}`)
-      .then((resp) => setState({ ...resp.data[0] }));
-  }, [id]);
+      .get(`http://localhost:5000/api/get/${tableName}/${id}`)
+      .then((resp) => setState({ ...resp.data[0] }))
+      .catch((err) => console.error("Virhe pyynnössä:", err));
+  }, [tableName]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ const AddEdit = () => {
     else {
       if (!id) {
         axios
-          .post("http://localhost:5000/api/post", {
+          .post(`http://localhost:5000/api/post/${tableName}`, {
             ip,
             nimi,
             osoite,
@@ -43,12 +45,12 @@ const AddEdit = () => {
             setState({ ip: "", nimi: "", osoite: "" });
           })
           .catch((err) => toast.error(err.response.data));
-        toast.success("Contact Added Successfully", {
+        toast.success(`Contact Added Successfully ${tableName}`, {
           position: toast.POSITION.TOP_CENTER,
         });
       } else {
         axios
-          .put(`http://localhost:5000/api/update/${id}`, {
+          .put(`http://localhost:5000/api/update/${tableName}/${id}`, {
             ip,
             nimi,
             osoite,

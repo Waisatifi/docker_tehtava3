@@ -17,9 +17,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/addContact" element={<AddEdit />} />
-          <Route path="/update/:id" element={<AddEdit />} />
-          <Route path="/view/:id" element={<View />} />
+          <Route path="/addContact/:tableName" element={<AddEdit />} />
+          <Route path="/update/:tablename/:id" element={<AddEdit />} />
+          <Route path="/view/:tableName/:id" element={<View />} />
         </Routes>
       </div>
     </BrowserRouter>

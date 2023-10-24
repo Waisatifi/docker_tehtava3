@@ -5,11 +5,11 @@ import axios from "axios";
 
 const View = () => {
   const [user, setUser] = useState({});
-  const { id } = useParams();
+  const { tableName, id } = useParams();
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/get/${id}`)
+      .get(`http://localhost:5000/api/get/${tableName}/${id}`)
       .then((resp) => setUser({ ...resp.data[0] }));
   }, [id]);
 

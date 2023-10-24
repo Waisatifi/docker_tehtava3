@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const initialState = {
   username: "",
@@ -73,9 +74,9 @@ function Login() {
                 <button type="submit" className="btn btn-primary">
                   Login
                 </button>
-                <a href="/register" className="btn btn-link my-2 my-sm-0">
-                  Register
-                </a>
+                <Link to={"/register"}>
+                  <button className="btn btn-edit">Register</button>
+                </Link>
               </form>
             </div>
           </div>

@@ -4,22 +4,21 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql2");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 const salt = 10;
+require("dotenv").config();
 
 const dbConfig = {
-  host: "localhost",
-  user: "root",
-  password: "Saharruddin213.",
-  database: "verkkolaitteet",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
 };
 
 let db = mysql.createConnection(dbConfig);
 
 function handleDisconnect() {
-  db = mysql.createConnection(dbConfig);
-
   db.connect((err) => {
     if (err) {
       console.log("Database Connection Failed !!!", err);
@@ -27,20 +26,41 @@ function handleDisconnect() {
     } else {
       console.log("Connected to Database");
       console.log("Creating database table");
-      let tableName = "contact_db";
+      let tableNames = [
+        "reititin_db",
+        "kytkimet_db",
+        "nas_db",
+        "epdu_db",
+        "proxmox_db",
+      ];
 
-      // Query to create table
-      let query = `CREATE TABLE ${tableName} 
-        (id INT AUTO_INCREMENT PRIMARY KEY,
-        ip VARCHAR(255) NOT NULL, nimi VARCHAR(255) NOT NULL, osoite VARCHAR(255) NOT NULL
-        )`;
+      let userTable = "users";
+      let userquery = `CREATE TABLE IF NOT EXISTS ${userTable} 
+          (id INT AUTO_INCREMENT PRIMARY KEY,
+          username VARCHAR(255) NOT NULL UNIQUE, password VARCHAR(255) NOT NULL)`;
 
-      db.query(query, (err, rows) => {
+      db.query(userquery, (err, rows) => {
         if (err) {
-          console.log("Table Exist");
+          console.log(`Table ${userTable} Exist`);
         } else {
-          console.log(`Successfully Created Table - ${tableName}`);
+          console.log(`Successfully created Table - ${userTable}`);
         }
+      });
+
+      tableNames.forEach((tableName) => {
+        // Query to create table
+        let query = `CREATE TABLE IF NOT EXISTS ${tableName} 
+          (id INT AUTO_INCREMENT PRIMARY KEY,
+          ip VARCHAR(255) NOT NULL, nimi VARCHAR(255) NOT NULL, osoite VARCHAR(255) NOT NULL
+          )`;
+
+        db.query(query, (err, rows) => {
+          if (err) {
+            console.log(`Table ${tableName}  Exist`);
+          } else {
+            console.log(`Successfully Created Table - ${tableName}`);
+          }
+        });
       });
     }
   });
@@ -72,8 +92,9 @@ app.use(cookieParser());
 //   res.json("Testing Node.js Server");
 // });
 
-app.get("/api/get", (req, res) => {
-  const sqlGet = "SELECT * from contact_db";
+app.get("/api/get/:tableName", (req, res) => {
+  const { tableName } = req.params;
+  const sqlGet = `SELECT * from ${tableName}`;
   db.query(sqlGet, (err, result) => {
     res.send(result);
   });
@@ -100,7 +121,7 @@ app.get("/", verifyUser, (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  const sqlInsert = "INSERT INTO login(username,password) VALUES (?,?)";
+  const sqlInsert = "INSERT INTO users(username,password) VALUES (?,?)";
 
   bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
     if (err) return res.json({ Error: "Error for hassing password" });
@@ -115,7 +136,7 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const sql = "SELECT * FROM login WHERE username =?";
+  const sql = "SELECT * FROM users WHERE username =?";
   db.query(sql, req.body.username, (err, data) => {
     if (err) return res.json({ Error: "Login error" });
     if (data.length > 0) {
@@ -126,7 +147,7 @@ app.post("/login", (req, res) => {
           if (err) res.json({ Error: "No username existed" });
           if (response) {
             const username = data[0].username;
-            const token = jwt.sign({ username }, "1234", {
+            const token = jwt.sign({ username }, process.env.TOKEN_SECRET_KEY, {
               expiresIn: "1d",
             });
             res.cookie("token", token);
@@ -142,9 +163,15 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.post("/api/post", (req, res) => {
+app.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  return res.json({ Status: "Success" });
+});
+
+app.post("/api/post/:tableName", (req, res) => {
+  const { tableName } = req.params;
   const { ip, nimi, osoite } = req.body;
-  const sqlInsert = "INSERT INTO contact_db(ip, nimi, osoite) VALUES(?,?,?)";
+  const sqlInsert = `INSERT INTO ${tableName} (ip, nimi, osoite) VALUES(?,?,?)`;
   db.query(sqlInsert, [ip, nimi, osoite], (error, result) => {
     if (error) console.log(error);
   });
@@ -154,24 +181,36 @@ app.delete("/api/remove/:tableName/:id", (req, res) => {
   const { tableName, id } = req.params;
   const sqlRemove = `DELETE FROM ${tableName} WHERE id=?`;
   db.query(sqlRemove, id, (error, result) => {
-    if (error) console.log("ei onnistu");
+    if (error) {
+      console.error("Error deleting record:", error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while deleting the record." });
+    } else {
+      res.json({ message: "Record deleted successfully." });
+    }
   });
 });
 
-app.get("/api/get/:id", (req, res) => {
-  const { id } = req.params;
-  const sqlGet = "SELECT * from contact_db WHERE id = ?";
+app.get("/api/get/:tableName/:id", (req, res) => {
+  const { tableName, id } = req.params;
+  const sqlGet = `SELECT * FROM ${tableName} WHERE id=?`;
   db.query(sqlGet, id, (err, result) => {
-    if (err) console.log(err);
-    res.send(result);
+    if (err) {
+      console.error("Error SELECTING record:", err);
+      res
+        .status(500)
+        .json({ err: "An error occurred while SELECTING the record." });
+    } else {
+      res.send(result);
+    }
   });
 });
 
-app.put("/api/update/:id", (req, res) => {
-  const { id } = req.params;
+app.put("/api/update/:tableName/:id", (req, res) => {
+  const { tableName, id } = req.params;
   const { ip, nimi, osoite } = req.body;
-  const sqlUpdate =
-    "UPDATE contact_db SET ip= ?, nimi= ?, osoite= ? WHERE id=?";
+  const sqlUpdate = `UPDATE ${tableName} SET ip= ?, nimi= ?, osoite= ? WHERE id=?`;
   db.query(sqlUpdate, [ip, nimi, osoite, id], (err, result) => {
     if (err) console.log(err);
     res.send(result);
