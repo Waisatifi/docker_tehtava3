@@ -4,13 +4,13 @@ import "./View.css";
 import axios from "axios";
 
 const View = () => {
-  const [user, setUser] = useState({});
+  const [laite, setLaite] = useState({});
   const { tableName, id } = useParams();
 
   useEffect(() => {
     axios
       .get(`http://localhost:5000/api/get/${tableName}/${id}`)
-      .then((resp) => setUser({ ...resp.data[0] }));
+      .then((resp) => setLaite({ ...resp.data[0] }));
   }, [id]);
 
   return (
@@ -25,15 +25,15 @@ const View = () => {
           <br />
           <br />
           <strong>Ip: </strong>
-          <span>{user.ip}</span>
+          <span>{laite.ip}</span>
           <br />
           <br />
           <strong>Nimi: </strong>
-          <span>{user.nimi}</span>
+          <span>{laite.nimi}</span>
           <br />
           <br />
           <strong>Osoite: </strong>
-          <span>{user.ip}</span>
+          <span>{laite.osoite}</span>
           <br />
           <br />
           <Link to="/">

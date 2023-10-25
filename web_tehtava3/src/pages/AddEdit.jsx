@@ -17,15 +17,15 @@ const AddEdit = () => {
 
   const navigator = useNavigate();
 
-  const { id } = useParams();
-  const tableName = "reititin_db";
+  const { tableName, id } = useParams();
+  // const tableName = "reititin_db";
 
   useEffect(() => {
     axios
       .get(`http://localhost:5000/api/get/${tableName}/${id}`)
       .then((resp) => setState({ ...resp.data[0] }))
       .catch((err) => console.error("Virhe pyynnössä:", err));
-  }, [tableName]);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

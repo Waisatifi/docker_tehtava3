@@ -16,9 +16,10 @@ const dbConfig = {
   database: process.env.DB_DATABASE,
 };
 
-let db = mysql.createConnection(dbConfig);
+let db;
 
 function handleDisconnect() {
+  db = mysql.createConnection(dbConfig);
   db.connect((err) => {
     if (err) {
       console.log("Database Connection Failed !!!", err);
@@ -35,7 +36,7 @@ function handleDisconnect() {
       ];
 
       let userTable = "users";
-      let userquery = `CREATE TABLE IF NOT EXISTS ${userTable} 
+      let userquery = `CREATE TABLE ${userTable}
           (id INT AUTO_INCREMENT PRIMARY KEY,
           username VARCHAR(255) NOT NULL UNIQUE, password VARCHAR(255) NOT NULL)`;
 
@@ -49,7 +50,7 @@ function handleDisconnect() {
 
       tableNames.forEach((tableName) => {
         // Query to create table
-        let query = `CREATE TABLE IF NOT EXISTS ${tableName} 
+        let query = `CREATE TABLE ${tableName} 
           (id INT AUTO_INCREMENT PRIMARY KEY,
           ip VARCHAR(255) NOT NULL, nimi VARCHAR(255) NOT NULL, osoite VARCHAR(255) NOT NULL
           )`;
@@ -70,7 +71,7 @@ function handleDisconnect() {
     if (err.code === "PROTOCOL_CONNECTION_LOST") {
       handleDisconnect();
     } else {
-      throw err;
+      console.error("ei yhdistynt tietokantaan, älä huoli kohta yhdistyy:", err);
     }
   });
 }
@@ -177,6 +178,16 @@ app.post("/api/post/:tableName", (req, res) => {
   });
 });
 
+app.put("/api/update/:tableName/:id", (req, res) => {
+  const { tableName, id } = req.params;
+  const { ip, nimi, osoite } = req.body;
+  const sqlUpdate = `UPDATE ${tableName} SET ip= ?, nimi= ?, osoite= ? WHERE id=${id}`;
+  db.query(sqlUpdate, [ip, nimi, osoite], (err, result) => {
+    if (err) console.log(err);
+    res.send(result);
+  });
+});
+
 app.delete("/api/remove/:tableName/:id", (req, res) => {
   const { tableName, id } = req.params;
   const sqlRemove = `DELETE FROM ${tableName} WHERE id=?`;
@@ -197,23 +208,13 @@ app.get("/api/get/:tableName/:id", (req, res) => {
   const sqlGet = `SELECT * FROM ${tableName} WHERE id=?`;
   db.query(sqlGet, id, (err, result) => {
     if (err) {
-      console.error("Error SELECTING record:", err);
+      console.error(`Error SELECTING ${tableName} ${id} record:`, err);
       res
         .status(500)
         .json({ err: "An error occurred while SELECTING the record." });
     } else {
       res.send(result);
     }
-  });
-});
-
-app.put("/api/update/:tableName/:id", (req, res) => {
-  const { tableName, id } = req.params;
-  const { ip, nimi, osoite } = req.body;
-  const sqlUpdate = `UPDATE ${tableName} SET ip= ?, nimi= ?, osoite= ? WHERE id=?`;
-  db.query(sqlUpdate, [ip, nimi, osoite, id], (err, result) => {
-    if (err) console.log(err);
-    res.send(result);
   });
 });
 

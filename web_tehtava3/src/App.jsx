@@ -18,7 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/addContact/:tableName" element={<AddEdit />} />
-          <Route path="/update/:tablename/:id" element={<AddEdit />} />
+          <Route path="/update/:tableName/:id" element={<AddEdit />} />
           <Route path="/view/:tableName/:id" element={<View />} />
         </Routes>
       </div>
