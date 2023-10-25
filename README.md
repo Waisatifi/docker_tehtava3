@@ -1,7 +1,6 @@
 # docker_tehtava3
 
 ## Kuinka käynnistää sovellus
-
   1. cd api
   2. npm install
   3. cd ..
