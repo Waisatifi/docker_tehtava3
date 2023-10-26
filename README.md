@@ -18,11 +18,11 @@ Tehtävänä oli suunnitella ja toteuttaa mikropalveluperiaatteella toimiva labr
   bash run.sh
 
 ### Palvelimien osoitteet
- server: localhost:5000
- client: localhost:3000
- phpmyadmin: localhost:8080
-  Käyttäjätunnus: root
-  Salasana: root
+  - server: localhost:5000
+  - client: localhost:3000
+  - phpmyadmin: localhost:8080
+  - Käyttäjätunnus: root
+  - Salasana: root
 
 # Käyttöohjeet 
 
