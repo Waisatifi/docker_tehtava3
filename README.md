@@ -2,15 +2,15 @@
 Tehtävänä oli suunnitella ja toteuttaa mikropalveluperiaatteella toimiva labran toimintojen ja palveluiden keskitetty hallintasivusto tai muu 'konsolinäkymä'. Eli siis webbisivu, jonka voi asettaa esim. windows työasemalla oletussivuksi, johon on kerätty kaikki labran laitteiden ja työkalujen hallinta-, palvelu- ja toimintakuvaukset sekä osoitteet. 
 
 ### Toiminnat
-  Lisätä laitteita
-  Muokata laitteita
-  Poistaa laitteita
-  Kirjautuminen ja rekiströityminen
+  - Lisätä laitteita
+  - Muokata laitteita
+  - Poistaa laitteita
+  - Kirjautuminen ja rekiströityminen
 
 ### Mitä hyödynsin tehtävässä
-  Frontend: nginx:stable-alpine, React
-  Backend: Node.js, Express
-  Tietokanta: Mysql, phpmyadmin
+  - Frontend: nginx:stable-alpine, React
+  - Backend: Node.js, Express
+  - Tietokanta: Mysql, phpmyadmin
   
 # Kuinka käynnistää
 
