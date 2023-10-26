@@ -7,7 +7,7 @@ Tehtävänä oli suunnitella ja toteuttaa mikropalveluperiaatteella toimiva labr
   - Poistaa laitteita
   - Kirjautuminen ja rekiströityminen
 
-### Mitä hyödynsin tehtävässä
+### Mitä hyödynnettiin tehtävässä
   - Frontend: nginx:stable-alpine, React
   - Backend: Node.js, Express
   - Tietokanta: Mysql, phpmyadmin
