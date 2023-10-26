@@ -21,8 +21,8 @@ Tehtävänä oli suunnitella ja toteuttaa mikropalveluperiaatteella toimiva labr
   - server: localhost:5000
   - client: localhost:3000
   - phpmyadmin: localhost:8080
-  - Käyttäjätunnus: root
-  - Salasana: root
+    - Käyttäjätunnus: root
+    - Salasana: root
 
 # Käyttöohjeet 
 
