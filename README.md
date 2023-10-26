@@ -24,7 +24,7 @@ Tehtävänä oli suunnitella ja toteuttaa mikropalveluperiaatteella toimiva labr
     - Käyttäjätunnus: root
     - Salasana: root
 
-# Käyttöohjeet 
+## Käyttöohjeet 
 
 Kun olet käynnistänyt sovelluksen niin  mene osoitteelen ** localhost:3000 **
 
@@ -35,9 +35,6 @@ Kun olet käynnistänyt sovelluksen niin  mene osoitteelen ** localhost:3000 **
 2. Sinulle avautuu login sivu, paina rekister näppäintä
 <img width="236" alt="image" src="https://github.com/Waisatifi/docker_tehtava3/assets/95131163/fa9d4216-3a0d-403d-8ee7-3fbf268a2ea2">
   
-3. Kun olet olet luonut käyttäjä tilin niin pääset lisäämän,muokkaaman ja poistamaan tietoja.
+3. Kun olet olet luonut käyttäjätilin niin pääset lisäämän,muokkaaman ja poistamaan tietoja.
 <img width="471" alt="image" src="https://github.com/Waisatifi/docker_tehtava3/assets/95131163/ee5d558a-61d9-4464-8caa-05afd7a0077b">
-
-
-  ### Ensimmäiseksi luo käyttäjä jotta pääset lisää verkkoja
 
