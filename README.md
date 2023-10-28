@@ -15,12 +15,12 @@ Tehtävänä oli suunnitella ja toteuttaa mikropalveluperiaatteella toimiva labr
 # Kuinka käynnistää
 Tehtävä on tehty Windows ympäristössä, joten luo kansio windowsissa ja aukase se visual studio codessa.
 
-Mene terminaalin (voit hyödyntää ubuntua tässä)
+Mene terminaalin (voit hyödyntää ubuntua tässä) ja kirjoita seuraava teksit
 
-  Git clone https://github.com/Waisatifi/docker_tehtava3.git
+  - Git clone https://github.com/Waisatifi/docker_tehtava3.git
 
 Sen jälkeen anna tämä kommento 
-  dos2unix run.sh
+  - dos2unix run.sh
 
 ### Aja vain run.sh scripti
   bash run.sh
