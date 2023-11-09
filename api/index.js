@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 const salt = 10;
+
 require("dotenv").config();
 
 const dbConfig = {
@@ -17,6 +18,8 @@ const dbConfig = {
 };
 
 let db;
+
+
 
 function handleDisconnect() {
   db = mysql.createConnection(dbConfig);
@@ -52,7 +55,7 @@ function handleDisconnect() {
         // Query to create table
         let query = `CREATE TABLE ${tableName} 
           (id INT AUTO_INCREMENT PRIMARY KEY,
-          ip VARCHAR(255) NOT NULL, nimi VARCHAR(255) NOT NULL, osoite VARCHAR(255) NOT NULL
+          ip VARCHAR(255) NOT NULL, nimi VARCHAR(255) NOT NULL UNIQUE, osoite VARCHAR(255) NOT NULL
           )`;
 
         db.query(query, (err, rows) => {
@@ -60,11 +63,76 @@ function handleDisconnect() {
             console.log(`Table ${tableName}  Exist`);
           } else {
             console.log(`Successfully Created Table - ${tableName}`);
+            seedDatabase(tableName);
           }
         });
       });
     }
+
+
+
   });
+
+  function seedDatabase(databaseName) {
+    // insert known data to the tables at start up
+    const tablesWithSeedData = {
+      reititin_db: [
+        { ip: "10.0.0.1", nimi: "fs.com SF-5105", osoite: "http://10.0.0.2" }
+      ],
+      kytkimet_db: [
+        { ip: "10.0.0.2", nimi: "Aruba-2930F-48G-PoEP-4SFPP", osoite: "http://10.0.0.2" },
+        { ip: "10.0.0.3", nimi: "ubiguiti EdgeSwitch", osoite: "https://10.0.0.3" },
+        { ip: "10.0.0.4", nimi: "D-Link DXS-1210-10", osoite: "http://10.0.0.4" },
+        { ip: "10.0.0.5", nimi: "D-Link DGS-1510-28X", osoite: "http://10.0.0.5" },
+        { ip: "10.0.0.6", nimi: "HP Officeconnect 1820 j9982A", osoite: "http://10.0.0.6" },
+        { ip: "10.0.0.7", nimi: "HP 2530-24G Switch j9776A", osoite: "http://10.0.0.7" },
+        { ip: "10.0.0.8", nimi: "fs.com S5960-20SQ", osoite: "https://10.0.0.8" },
+        { ip: "10.0.0.10", nimi: "fs.com S3910-24TS", osoite: "https://10.0.0.10" },
+        { ip: "10.0.0.14", nimi: "fs.com S3910-24TS", osoite: "https://10.0.0.14" }
+      ],
+      nas_db: [
+        { ip: "10.0.0.100", nimi: "QNAP", osoite: "https://10.0.0.100" }
+      ],
+      epdu_db: [
+        { ip: "10.0.0.129", nimi: "ePDU", osoite: "http://labrapdu.labra.local" }
+      ],
+      proxmox_db: [
+        { ip: "10.0.1.10", nimi: "proxmox", osoite: "http://10.0.1.10" },
+        { ip: "10.0.1.11", nimi: "pve2", osoite: "http://10.0.1.11" },
+        { ip: "10.0.1.12", nimi: "pve3", osoite: "http://10.0.1.12" },
+        { ip: "10.0.1.13", nimi: "pve4", osoite: "http://10.0.1.13" },
+        { ip: "10.0.1.14", nimi: "pve5", osoite: "http://10.0.1.14" },
+        { ip: "10.0.1.15", nimi: "pve6", osoite: "http://10.0.1.15" },
+        { ip: "10.0.1.16", nimi: "pve7", osoite: "http://10.0.1.16" },
+        { ip: "10.0.1.17", nimi: "pve8", osoite: "http://10.0.1.17" },
+        { ip: "10.0.1.18", nimi: "pvedellR710", osoite: "http://10.0.1.18" },
+        { ip: "10.0.1.22", nimi: "pvedellR720", osoite: "http://10.0.1.22" },
+        { ip: "10.0.1.24", nimi: "dell3", osoite: "http://10.0.1.24" }
+      ]
+    }
+
+    if (tablesWithSeedData.hasOwnProperty(databaseName)) {
+      let rows = tablesWithSeedData[databaseName];
+      rows.forEach(row => {
+        const columns = Object.keys(row).join(", ");
+        const placeholders = new Array(Object.keys(row).length).fill("?").join(", ");
+        const values = Object.values(row);
+  
+        const sqlInsert = `INSERT IGNORE INTO ${databaseName} (${columns}) VALUES (${placeholders})`;
+        // Assuming db.query is already defined and handles the query execution
+        db.query(sqlInsert, values, (error, result) => {
+          if (error) {
+            console.error(`Error seeding ${databaseName}:`, error);
+          } else {
+            console.log(`Seeded ${databaseName} with known data successfully.`);
+          }
+        });
+      });
+    } else {
+      console.error(`No seed data found for ${databaseName}`);
+    }
+  }
+
 
   db.on("error", function (err) {
     console.log("Database error:", err);
@@ -74,6 +142,8 @@ function handleDisconnect() {
       console.error("ei yhdistynt tietokantaan, älä huoli kohta yhdistyy:", err);
     }
   });
+
+
 }
 
 handleDisconnect();

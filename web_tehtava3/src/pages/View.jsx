@@ -33,7 +33,7 @@ const View = () => {
           <br />
           <br />
           <strong>Osoite: </strong>
-          <span>{laite.osoite}</span>
+          <span><a href={laite.osoite}>{laite.osoite}</a></span>
           <br />
           <br />
           <Link to="/">

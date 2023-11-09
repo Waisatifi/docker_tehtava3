@@ -87,7 +87,7 @@ function Taulukko({ tableName, otsikko }) {
                       </TableCell>
                       <TableCell align="right">{item.ip}</TableCell>
                       <TableCell align="right">{item.nimi}</TableCell>
-                      <TableCell align="right">{item.osoite}</TableCell>
+                      <TableCell align="right"><a href={item.osoite}>{item.osoite}</a></TableCell>
                       {auth ? (
                         <TableCell align="right">
                           <Link to={`/update/${tableName}/${item.id}`}>
